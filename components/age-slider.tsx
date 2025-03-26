@@ -75,7 +75,10 @@ export function AgeSlider({ value, onChange, min = 0, max = 30, error = false, c
           step={1}
           value={[years]}
           onValueChange={(vals) => updateAge(vals[0], months)}
-          className={cn(error ? "border-destructive" : "")}
+          className={cn(
+            error ? "border-destructive" : "",
+            "[&>.relative>.absolute]:bg-gray-700 dark:[&>.relative>.absolute]:bg-gray-300",
+          )}
         />
       </div>
 
@@ -93,7 +96,10 @@ export function AgeSlider({ value, onChange, min = 0, max = 30, error = false, c
           step={1}
           value={[months]}
           onValueChange={(vals) => updateAge(years, vals[0])}
-          className={cn(error ? "border-destructive" : "")}
+          className={cn(
+            error ? "border-destructive" : "",
+            "[&>.relative>.absolute]:bg-gray-700 dark:[&>.relative>.absolute]:bg-gray-300",
+          )}
         />
       </div>
 
