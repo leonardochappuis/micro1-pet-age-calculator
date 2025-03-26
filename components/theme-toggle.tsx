@@ -35,13 +35,12 @@ export function ThemeToggle() {
             aria-pressed={isDarkMode}
             aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
             className="p-0 h-auto w-auto hover:bg-transparent focus:bg-transparent"
-            style={{ transform: "scale(2)" }}
           >
             <span className="sr-only">{isDarkMode ? "Switch to light mode" : "Switch to dark mode"}</span>
             {isDarkMode ? (
-              <Sun className="h-24 w-24 text-white" aria-hidden="true" />
+              <Sun className="h-8 w-8 md:h-10 md:w-10 text-white" aria-hidden="true" />
             ) : (
-              <Moon className="h-24 w-24 text-black" aria-hidden="true" />
+              <Moon className="h-8 w-8 md:h-10 md:w-10 text-black" aria-hidden="true" />
             )}
           </Button>
         </TooltipTrigger>

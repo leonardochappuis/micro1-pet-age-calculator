@@ -143,9 +143,12 @@ export function AgeResult({ humanAge, description, petName, petType, petAge, bre
                 {getPetIcon(petType)}
                 <span className="sr-only">{petTypeLabel} icon</span>
               </div>
-              <h3 className="text-xl font-bold text-foreground">
+              <h3 className="text-xl font-bold text-foreground flex items-center flex-wrap gap-2">
                 {petName ? `${petName} is` : "Your pet is"}{" "}
-                <span className="text-gray-700 dark:text-gray-300">{formattedHumanAge}</span> in human years
+                <span className="text-3xl font-extrabold text-yellow-500 dark:text-yellow-400 bg-yellow-100 dark:bg-yellow-900/30 px-3 py-1 rounded-lg">
+                  {formattedHumanAge}
+                </span>
+                <span>in human years</span>
               </h3>
             </div>
             <p className="text-muted-foreground">{description}</p>

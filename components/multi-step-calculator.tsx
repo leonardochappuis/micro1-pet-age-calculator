@@ -6,12 +6,11 @@ import { useForm } from "react-hook-form"
 import * as z from "zod"
 import { Cat, Dog, Fish, Rabbit, ChevronRight, ChevronLeft, Sparkles } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
-import confetti from "canvas-confetti"
 import { cn } from "@/lib/utils"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormMessage } from "@/components/ui/form"
+import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { calculateHumanAge } from "@/lib/age-calculator"
@@ -19,7 +18,7 @@ import { AgeResult } from "@/components/age-result"
 import { AgeComparisonChart } from "@/components/age-comparison-chart"
 import { PetCareRecommendations } from "@/components/pet-care-recommendations"
 import { petTypes, breedsByType } from "@/lib/pet-data"
-import { CustomNumberInput } from "@/components/custom-number-input"
+import { AgeSlider } from "@/components/age-slider"
 
 // Form schema with validation
 const formSchema = z.object({
@@ -54,6 +53,10 @@ const formSchema = z.object({
   name: z
     .string()
     .optional()
+    .transform((val) => val?.trim()) // Trim spaces
+    .refine((val) => !val || val.length > 0, {
+      message: "Pet name cannot be empty or just spaces",
+    })
     .refine((val) => !val || /^[A-Za-z\s]+$/.test(val), {
       message: "Pet name can only contain letters and spaces",
     }),
@@ -68,7 +71,6 @@ export default function MultiStepCalculator() {
     petAge: number
     breed: string
   } | null>(null)
-  const [showConfetti, setShowConfetti] = useState(false)
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -92,42 +94,6 @@ export default function MultiStepCalculator() {
       form.setValue("breed", "")
     }
   }, [watchPetType, form])
-
-  // Trigger confetti when result is shown
-  useEffect(() => {
-    if (showConfetti) {
-      const duration = 3 * 1000
-      const animationEnd = Date.now() + duration
-      const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 }
-
-      function randomInRange(min: number, max: number) {
-        return Math.random() * (max - min) + min
-      }
-
-      const interval: any = setInterval(() => {
-        const timeLeft = animationEnd - Date.now()
-
-        if (timeLeft <= 0) {
-          return clearInterval(interval)
-        }
-
-        const particleCount = 50 * (timeLeft / duration)
-        // since particles fall down, start a bit higher than random
-        confetti({
-          ...defaults,
-          particleCount,
-          origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
-        })
-        confetti({
-          ...defaults,
-          particleCount,
-          origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
-        })
-      }, 250)
-
-      return () => clearInterval(interval)
-    }
-  }, [showConfetti])
 
   const nextStep = async () => {
     let canProceed = false
@@ -179,14 +145,12 @@ export default function MultiStepCalculator() {
     })
 
     setStep(5)
-    setShowConfetti(true)
   }
 
   const resetForm = () => {
     form.reset()
     setStep(1)
     setResult(null)
-    setShowConfetti(false)
   }
 
   const getPetIcon = (petType: string) => {
@@ -286,21 +250,16 @@ export default function MultiStepCalculator() {
                 <div className="text-xl font-medium text-center mb-6">How old is your {watchBreed}?</div>
                 <FormControl>
                   <div className="flex justify-center">
-                    <CustomNumberInput
+                    <AgeSlider
                       value={field.value}
                       onChange={field.onChange}
                       min={0}
                       max={30}
-                      step={0.1}
-                      placeholder="Age in years"
                       error={!!form.formState.errors.age}
-                      className="w-full max-w-xs"
+                      className="w-full max-w-md"
                     />
                   </div>
                 </FormControl>
-                <FormDescription className="text-center text-muted-foreground text-sm">
-                  For puppies or kittens younger than 1 year, use decimals (e.g., 0.5 for 6 months)
-                </FormDescription>
                 <FormMessage className="text-destructive text-center" />
               </FormItem>
             )}

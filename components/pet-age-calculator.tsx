@@ -16,7 +16,7 @@ import { AgeResult } from "@/components/age-result"
 import { AgeComparisonChart } from "@/components/age-comparison-chart"
 import { PetCareRecommendations } from "@/components/pet-care-recommendations"
 import { petTypes, breedsByType } from "@/lib/pet-data"
-import { CustomNumberInput } from "@/components/custom-number-input"
+import { AgeSlider } from "@/components/age-slider"
 
 // Form schema with validation
 const formSchema = z.object({
@@ -51,6 +51,10 @@ const formSchema = z.object({
   name: z
     .string()
     .optional()
+    .transform((val) => val?.trim()) // Trim spaces
+    .refine((val) => !val || val.length > 0, {
+      message: "Pet name cannot be empty or just spaces",
+    })
     .refine((val) => !val || /^[A-Za-z\s]+$/.test(val), {
       message: "Pet name can only contain letters and spaces",
     }),
@@ -235,19 +239,17 @@ export default function PetAgeCalculator() {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <CustomNumberInput
+                      <AgeSlider
                         value={field.value}
                         onChange={field.onChange}
                         min={0}
                         max={30}
-                        step={0.1}
-                        placeholder="How old is your pet? (in years)"
                         error={!!form.formState.errors.age}
                         className="w-full"
                       />
                     </FormControl>
                     <FormDescription id="age-description" className="text-muted-foreground text-xs italic">
-                      For puppies or kittens younger than 1 year, use decimals (e.g., 0.5 for 6 months)
+                      Use the sliders to set your pet's age in years and months
                     </FormDescription>
                     <FormMessage className="text-destructive" />
                   </FormItem>
