@@ -395,13 +395,22 @@ export default function MultiStepCalculator() {
       <CardFooter className="flex justify-between pt-2">
         {step < 5 ? (
           <>
-            <Button type="button" variant="outline" onClick={prevStep} disabled={step === 1} className="w-28">
-              <ChevronLeft className="mr-2 h-4 w-4" /> Back
-            </Button>
+            {step > 1 && (
+              <Button type="button" variant="outline" onClick={prevStep} className="w-28">
+                <ChevronLeft className="mr-2 h-4 w-4" /> Back
+              </Button>
+            )}
 
-            <Button type="button" onClick={nextStep} className="w-28 bg-gray-700 hover:bg-gray-800 text-white">
-              {step === 4 ? "Calculate" : "Next"} <ChevronRight className="ml-2 h-4 w-4" />
-            </Button>
+            <div className={step === 1 ? "ml-auto" : ""}>
+              <Button
+                type="button"
+                onClick={nextStep}
+                className="w-28 bg-gray-700 hover:bg-gray-800 text-white"
+                disabled={(step === 1 && !watchPetType) || (step === 2 && !watchBreed) || (step === 3 && !watchAge)}
+              >
+                {step === 4 ? "Calculate" : "Next"} <ChevronRight className="ml-2 h-4 w-4" />
+              </Button>
+            </div>
           </>
         ) : (
           <Button type="button" onClick={resetForm} className="w-full bg-gray-700 hover:bg-gray-800 text-white">
